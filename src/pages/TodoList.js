@@ -1,108 +1,135 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import {ListGroup} from 'reactstrap'
-import { Input } from 'reactstrap';
+import {ListGroup, Input} from 'reactstrap'
 import TodoItem from './TodoItem';
 import firebase from "../firebase";
 
 class TodoList extends React.Component {
     constructor(props) {
         super(props);
-         
+
     this.state =
        { 
         tasklist : [],
         NewInputValue: '',
         uid: '',
+        emptytasklist: false,
       }
       this.handleChange = this.handleChange.bind(this); 
     }
-
+    
 LoadUserID() {
-  var self = this
+  var self = this;
   firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
       const currentuid = user.uid
       console.log('currentuid');
       console.log(currentuid);
         self.setState({
-          uid: currentuid
+          uid: currentuid,
     }) 
 
     var ref = firebase.database().ref('/todoapp/users/' + self.state.uid + '/list/todos');
     ref.once('value').then(snap=>{
       let database = snap.val();
-            
+      if (database == null) {
+        self.setState({
+          emptytasklist: true
+        })
+      }
+      else{
       console.log('Etat de la DB initiale');
       console.log(database);           
       self.setState({
         tasklist: database
       });
+      }
     })
     
     } else {
         console.log('no one is logged in')
       }
         }
-  ).bind(this)}
+).bind(this)}
 
 
 componentDidMount() {
   this.LoadUserID();
 }
 
- componentWillUnmount() {
+componentWillUnmount() {
   this.LoadUserID();
 }   
         
-deleteTask(event) {
-    const i = event.target.itemId
-    let todos = this.state.tasklist.slice();
-    todos.splice(i, 1);
-    console.log('etat de todos dans deletetask')
-    console.log(todos)
+deleteTask = (event) => {
+const i = event.target.value
+let todos = this.state.tasklist.slice();
 
+todos.splice(i, 1);
+
+  this.setState({
+      tasklist: todos
+  });
+  firebase.database().ref('/todoapp/users/' + this.state.uid + '/list/').set({
+    todos
+    });
+  if(todos.length === 0) {
     this.setState({
-      tasklist : todos
+      emptytasklist : true
     })
+  }
+}    
 
-  }    
-
-    handleChange(input) {
-        let name = input.target.name
-        this.setState({
-          [name]: input.target.value
-        });
-      }
+handleChange(input) {
+  let name = input.target.name
+  this.setState({
+    [name]: input.target.value
+  });
+}
       
 CreateTask = (event) => {
-    
-  
-  
   if (event.key === 'Enter'){
-
-        let newTaskList = this.state.tasklist
-        let todos = this.state.tasklist
-        let newEntry = {
-          itemId: Date.now(),
-          itemText: event.target.value
-        }
-
-        newTaskList.push(newEntry)
-
-        this.setState({
-          tasklist: newTaskList
-        })
-  
-        this.setState({
-          NewInputValue: ""
-        })
-        
-         firebase.database().ref('/todoapp/users/' + this.state.uid + '/list/').set({
-          todos
-        });
+    let todos = this.state.tasklist
+    let newTaskList = this.state.tasklist
+    if(Array.isArray(todos) && todos.length){
+      // array exists and is not empty
+    
+    let newEntry = {
+      itemId: Date.now(),
+      itemText: event.target.value
     }
+    newTaskList.push(newEntry)
+    console.log('NewTasklist')
+    console.log(newTaskList)
+    this.setState({
+      tasklist: newTaskList,
+      NewInputValue: "",
+    })
+    firebase.database().ref('/todoapp/users/' + this.state.uid + '/list/').set({
+    todos
+    });
   }
+  else
+  {
+    let todos = []
+    let newEntry = {
+      itemId: Date.now(),
+      itemText: event.target.value
+    }
+    todos.push(newEntry)
+    console.log('NewEntry')
+    console.log(newEntry)
+    this.setState({
+      tasklist: todos,
+      NewInputValue: "",
+      emptytasklist: false
+    })
+    firebase.database().ref('/todoapp/users/' + this.state.uid + '/list/').set({
+      todos
+      });
+  }
+  }
+}
 
 render() {
   console.log('Etat de la liste des tâches');
@@ -116,9 +143,17 @@ render() {
   console.log('Etat de data');
   console.log(data);
 
+  const emptytasklist = this.state.emptytasklist
   return (
-        <div> 
-           <div className='Input'>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          textAlign: 'center',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: '10%'
+        }}> 
+        <div className='Input'>
             <Input  
               value={this.state.NewInputValue} 
               name="NewInputValue"
@@ -134,24 +169,26 @@ render() {
             />   
           </div>
 
-            <ListGroup 
-              className='List'
-              style={{
-                textAlign: 'center',
-                width: '40%',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}>
-              
-              {data.map((item,i) => <TodoItem
-               itemText={item.itemText}
-               itemId={item.itemId}
-               key={i}
-               deleteTask={this.deleteTask.bind(this)} />)}
-            </ListGroup>
-
-                
-            
+      {emptytasklist ? (
+        <h2 style={{marginTop: '5rem'}}>The todolist is empty...</h2>
+      ) : (
+        <ListGroup 
+        className='List'
+        style={{
+          textAlign: 'center',
+          width: '40%',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          paddingTop: '2rem',
+        }}>
+        
+        {data.map((item, i) => <TodoItem
+         itemText={item.itemText}
+         key={item.itemId}
+         value={i}
+         deleteTask={this.deleteTask.bind(this)} />)}
+      </ListGroup>
+      )}              
         </div>
         )
     }

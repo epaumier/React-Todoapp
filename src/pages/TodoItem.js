@@ -7,8 +7,7 @@ class TodoItem extends React.Component {
         return(
             
                 <ListGroupItem
-                  key={this.props.i}
-                  id={this.props.i}
+                  value={this.props.value}
                   onClick={this.props.deleteTask}>
                   {this.props.itemText}
                   </ListGroupItem>

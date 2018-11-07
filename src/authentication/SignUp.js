@@ -57,32 +57,25 @@ class SignUpForm extends React.Component {
   onSubmit = (event) => {
     const email = this.state.email;
     const password = this.state.passwordOne;
-     const username = this.state.username; 
+    const username = this.state.username; 
     var self = this;
-     firebase.auth().createUserWithEmailAndPassword(email, password);/*.catch(function(error) {
+     firebase.auth().createUserWithEmailAndPassword(email, password);
 
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      if (errorCode === 'auth/weak-password') {
-        alert('The password is too weak.');
-      } else {
-        this.props.history.push('../pages/TodoList')
-      }
-      console.log(error);
-    })} */
 
     //Authentication State observer => waits for the sign up process to be done and then signs
     //in the user. It must be present on all pages that needs info about signed in user
      firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             var uid = user.uid;
-
+            user.updateProfile({
+              displayName: username,
+            })
             firebase.database().ref('/todoapp/users/' + uid).set({
                 username: username,
                 email: email,
               });
               firebase.database().ref('/todoapp/users/'+ uid + '/list/').set({
-               todos: [{itemId:'0', itemText:'Click me to delete me'}]
+               todos: [{itemId:'0', itemText:'Click me to delete'}]
               });
         } else {
           console.log('No user is signed in.')
@@ -97,6 +90,7 @@ class SignUpForm extends React.Component {
        state: {
           isLoggedIn: true,
           username: this.state.username,
+          uid: this.state.uid,
       },
     }
     )
@@ -104,10 +98,10 @@ class SignUpForm extends React.Component {
   event.preventDefault();  
   } 
   
-/* componentWillUnmount() {
-  this.onSubmit();
-}
- */
+ componentWillUnmount() {
+  firebase.auth().onAuthStateChanged();
+} 
+ 
   render() {
  
     const {
@@ -124,29 +118,32 @@ class SignUpForm extends React.Component {
       email === '' ||
       username === '';
 
-     console.log('this.state.username');
+    console.log('this.state.username');
     console.log(this.state.username);
     console.log('this.state.email');
     console.log(this.state.email);
     console.log('this.state.passwordOne');
     console.log(this.state.passwordOne);
+
     return (
-      <div>
-<h1 style= {{padding: '2rem', textAlign: 'center'}}>Time to Sign Up !</h1>        
-      <Form onSubmit={this.onSubmit} style={{
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
         textAlign: 'center',
         width: '30%',
         marginLeft: 'auto',
         marginRight: 'auto',
-        
+        marginTop: '10%'
       }}>
+<h2 style={{paddingBottom: '2rem'}}>Time to Sign Up !</h2>        
+      <Form onSubmit={this.onSubmit} >
       <FormGroup>
         <Input
           value={this.state.username}
           name="username"
           onChange={this.username}
           type="text"
-          placeholder="Full Name"
+          placeholder="Username"
         />
         </FormGroup>
 
