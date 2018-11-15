@@ -1,9 +1,6 @@
 import React from 'react';
-import {
-  withRouter,
-  
-} from 'react-router-dom'
-import { Input, FormGroup, Form, Button } from 'reactstrap';
+import {withRouter} from 'react-router-dom'
+import { Input, FormGroup, Form, Button, Alert } from 'reactstrap';
 
 import firebase from "../firebase";
 
@@ -11,12 +8,14 @@ import firebase from "../firebase";
 class SignUpForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {  username: '',
+    this.state = {
+    username: '',
     email: '',
     passwordOne: '',
     passwordTwo: '',
     error: null,
-    uid: ''
+    uid: '',
+    emailalreadyinuse: false,
     };
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -58,48 +57,43 @@ class SignUpForm extends React.Component {
     const email = this.state.email;
     const password = this.state.passwordOne;
     const username = this.state.username; 
-    var self = this;
-     firebase.auth().createUserWithEmailAndPassword(email, password);
+    firebase.auth().createUserWithEmailAndPassword(email, password).then(() => {
+      const user = firebase.auth().currentUser;
+      let uid = user.uid
 
+      this.props.history.push({
+        pathname: '../pages/TodoList',
+      })
 
-    //Authentication State observer => waits for the sign up process to be done and then signs
-    //in the user. It must be present on all pages that needs info about signed in user
-     firebase.auth().onAuthStateChanged(function(user) {
-        if (user) {
-            var uid = user.uid;
-            user.updateProfile({
-              displayName: username,
-            })
-            firebase.database().ref('/todoapp/users/' + uid).set({
-                username: username,
-                email: email,
-              });
-              firebase.database().ref('/todoapp/users/'+ uid + '/list/').set({
-               todos: [{itemId:'0', itemText:'Click me to delete'}]
-              });
-        } else {
-          console.log('No user is signed in.')
-        }
-        self.setState({
-          uid: uid
-        })
-      }); 
-
-     this.props.history.push({
-       pathname: '../pages/TodoList',
-       state: {
-          isLoggedIn: true,
-          username: this.state.username,
-          uid: this.state.uid,
-      },
+      firebase.database().ref('/todoapp/users/' + uid).set({
+        username: username,
+        email: email,
+      });
+    
+      firebase.database().ref('/todoapp/users/'+ uid + '/activelist/').set({
+        todos: []
+      });
+    }).catch((error) => {
+      this.setState({
+          emailalreadyinuse: false,
+      })
+          // Handle Errors here.
+          var errorCode = error.code;
+    var errorMessage = error.message;
+    if (errorCode === "auth/email-already-in-use") {
+      this.setState({
+          emailalreadyinuse: true
+      })
     }
-    )
-
-  event.preventDefault();  
-  } 
+    else {
+      alert(errorMessage)
+    }
+        })
+   event.preventDefault();
+  }
   
  componentWillUnmount() {
-  firebase.auth().onAuthStateChanged();
+
 } 
  
   render() {
@@ -186,6 +180,12 @@ class SignUpForm extends React.Component {
         { error && <p>{error.message}</p> }
       </Form>
 
+              { this.state.emailalreadyinuse &&
+            <Alert color="danger">
+                Email already in use !
+            </Alert>
+        }
+
 </div>
     );
   }
@@ -193,5 +193,5 @@ class SignUpForm extends React.Component {
 
 
 
-export default withRouter(  SignUpForm, );
+export default withRouter(SignUpForm);
 

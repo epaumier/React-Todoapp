@@ -5,7 +5,8 @@ import About from './pages/About';
 import TodoList from './pages/TodoList';
 import SignUp from './authentication/SignUp';
 import SignIn from './authentication/SignIn';
-import Account from './pages/Account'
+import Account from './pages/Account';
+import ErrorPage from './pages/404';
 
 import { Nav, NavItem, NavLink, Navbar, NavbarBrand, Button } from 'reactstrap';
 import firebase from './firebase';
@@ -23,15 +24,20 @@ class App extends React.Component {
 
 componentDidMount() {
     // Bind the variable to the instance of the class.
-  this.authFirebaseListener = firebase.auth().onAuthStateChanged((user) => {
+  this.authFirebaseListener =  firebase.auth().onAuthStateChanged((user) => {
     if (user) {
-      this.setState({
-        loading: false,  // For the loader maybe
-        user, // User Details
-        isLoggedIn: true,
-        username: user.displayName,
+      var self = this
+      let uid = user.uid
+      firebase.database().ref('todoapp/users/' + uid).once('value').then(function(snapshot) {
+        var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+        self.setState({
+          username: username,
+          isLoggedIn: true
+        })
+        
       });
-    }
+
+    } 
     else {
       this.setState({
        isLoggedIn: false
@@ -41,7 +47,8 @@ componentDidMount() {
 }
 
 componentWillUnmount() {
-  this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function  
+  this.authFirebaseListener && this.authFirebaseListener() // Unlisten it by calling it as a function 
+
 } 
 
 
@@ -59,7 +66,9 @@ this.setState({
 };
   
 render() {
-  const isLoggedIn = this.state.isLoggedIn; 
+  const isLoggedIn = this.state.isLoggedIn;
+  console.log('username app.js')
+  console.log(this.state.username) 
   return (
     <div>
       <div>
@@ -109,6 +118,7 @@ render() {
         <Route path="/pages/SignIn" component={SignIn} />
         <Route path="/pages/Account" component={Account} />
         <Route path="/pages/SignUp" component={SignUp} />
+        <Route path="/pages/404" component={ErrorPage} />
       </div>
     </div>
   )
