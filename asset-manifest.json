@@ -1,15 +1,15 @@
 {
-  "main.css": "/React-Todoapp/static/css/main.1c1edeaa.chunk.css",
-  "main.js": "/React-Todoapp/static/js/main.d4b259ee.chunk.js",
-  "main.js.map": "/React-Todoapp/static/js/main.d4b259ee.chunk.js.map",
-  "static/css/1.40551347.chunk.css": "/React-Todoapp/static/css/1.40551347.chunk.css",
-  "static/js/1.24a41462.chunk.js": "/React-Todoapp/static/js/1.24a41462.chunk.js",
-  "static/js/1.24a41462.chunk.js.map": "/React-Todoapp/static/js/1.24a41462.chunk.js.map",
-  "runtime~main.js": "/React-Todoapp/static/js/runtime~main.3b0903f8.js",
-  "runtime~main.js.map": "/React-Todoapp/static/js/runtime~main.3b0903f8.js.map",
-  "static/css/1.40551347.chunk.css.map": "/React-Todoapp/static/css/1.40551347.chunk.css.map",
-  "static/css/main.1c1edeaa.chunk.css.map": "/React-Todoapp/static/css/main.1c1edeaa.chunk.css.map",
-  "index.html": "/React-Todoapp/index.html",
-  "precache-manifest.cc0ffc668212516f3fe208a6441568b4.js": "/React-Todoapp/precache-manifest.cc0ffc668212516f3fe208a6441568b4.js",
-  "service-worker.js": "/React-Todoapp/service-worker.js"
+  "main.css": "/React-Todoapp/src/static/css/main.1c1edeaa.chunk.css",
+  "main.js": "/React-Todoapp/src/static/js/main.d4b259ee.chunk.js",
+  "main.js.map": "/React-Todoapp/src/static/js/main.d4b259ee.chunk.js.map",
+  "static/css/1.40551347.chunk.css": "/React-Todoapp/src/static/css/1.40551347.chunk.css",
+  "static/js/1.5f496248.chunk.js": "/React-Todoapp/src/static/js/1.5f496248.chunk.js",
+  "static/js/1.5f496248.chunk.js.map": "/React-Todoapp/src/static/js/1.5f496248.chunk.js.map",
+  "runtime~main.js": "/React-Todoapp/src/static/js/runtime~main.8ddb9cd8.js",
+  "runtime~main.js.map": "/React-Todoapp/src/static/js/runtime~main.8ddb9cd8.js.map",
+  "static/css/1.40551347.chunk.css.map": "/React-Todoapp/src/static/css/1.40551347.chunk.css.map",
+  "static/css/main.1c1edeaa.chunk.css.map": "/React-Todoapp/src/static/css/main.1c1edeaa.chunk.css.map",
+  "index.html": "/React-Todoapp/src/index.html",
+  "precache-manifest.2a6d4728185eb9415d155c7544776190.js": "/React-Todoapp/src/precache-manifest.2a6d4728185eb9415d155c7544776190.js",
+  "service-worker.js": "/React-Todoapp/src/service-worker.js"
 }
