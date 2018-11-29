@@ -138,6 +138,7 @@ class SignUpForm extends React.Component {
           onChange={this.username}
           type="text"
           placeholder="Username"
+          autoComplete="username"
         />
         </FormGroup>
 
@@ -148,6 +149,7 @@ class SignUpForm extends React.Component {
           onChange={this.email}
           type="text"
           placeholder="Email Address"
+          autoComplete="email"
         />
         </FormGroup>
 
@@ -158,6 +160,7 @@ class SignUpForm extends React.Component {
           onChange={this.passwordOne}
           type="password"
           placeholder="Password"
+          autoComplete="new-password"
         />
         </FormGroup>
         
@@ -168,6 +171,7 @@ class SignUpForm extends React.Component {
           onChange={this.passwordTwo}
           type="password"
           placeholder="Confirm Password"
+          autoComplete="new-password"
         />
         </FormGroup>
        

@@ -11,6 +11,10 @@ import ErrorPage from './pages/404';
 import { Nav, NavItem, NavLink, Navbar, NavbarBrand, Button } from 'reactstrap';
 import firebase from './firebase';
 
+
+
+
+
 class App extends React.Component {
   constructor(props) {
   super(props);
@@ -21,6 +25,8 @@ class App extends React.Component {
     };
   this.onClick = this.onClick.bind(this);
 } 
+
+
 
 componentDidMount() {
     // Bind the variable to the instance of the class.

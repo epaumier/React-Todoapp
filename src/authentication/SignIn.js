@@ -107,6 +107,7 @@ firebase.auth().signInWithEmailAndPassword(
                     onChange={this.email}
                     type="email"
                     placeholder="Enter Email"
+                    autoComplete="email"
                 />
             </FormGroup>
 
@@ -117,6 +118,7 @@ firebase.auth().signInWithEmailAndPassword(
                     onChange={this.password} 
                     type="password"
                     placeholder="Enter Password"
+                    autoComplete="current-password"
                 />
             </FormGroup>
             <Button disabled={isInvalid} type="submit"> Sign In </Button>

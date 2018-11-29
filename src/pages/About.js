@@ -12,7 +12,6 @@ const About = () => (
       <p  className="lead">
        My stack for this project: React (CRA v2) and Firebase
       </p>
-    
     </Container>
   </Jumbotron>
 </div>
