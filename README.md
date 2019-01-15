@@ -1,5 +1,7 @@
 #Todo App
 
+![](demo.gif)
+
 The following tools were used to build this app:
 
 * create-react-app v2
